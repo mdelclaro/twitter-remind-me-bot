@@ -1,0 +1,15 @@
+{
+  "name": "remind-me-twitter-bot",
+  "version": "1.0.0",
+  "description": "@ me on any tweet and I will send you a reminder to check it later! ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matheus Del Claro",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "twitter": "^1.7.1"
+  }
+}
