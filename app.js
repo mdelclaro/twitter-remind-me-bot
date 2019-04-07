@@ -1,4 +1,3 @@
-const Twitter = require("twitter");
-const config = require("./config");
+const scheduler = require("./src/scheduler");
 
-const twitter = new Twitter(config);
+scheduler.run();
