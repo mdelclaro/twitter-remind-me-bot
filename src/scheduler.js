@@ -23,14 +23,16 @@ function listenToTweets() {
   const stream = twitter.stream("statuses/filter", { track: ["@mdelclaro"] });
   console.log("ouvindo tweets...");
   stream.on("tweet", async tweet => {
+    console.log("recebeu tweet");
     const user = tweet.user.screen_name;
-    const tweetId = tweet.id;
+    const tweetId = tweet.id_str;
     const replyText = "ok";
     const reminderText = "reminder";
+    // console.log(tweet);
 
     try {
       reply(user, tweetId, replyText);
-      schedule(user, tweetId, reminderText);
+      //schedule(user, tweetId, reminderText);
     } catch (err) {
       console.log("error: " + err);
     }
@@ -41,23 +43,22 @@ function reply(user, tweetId, text) {
   const status = `@${user} ${text}`;
   const in_reply_to_status_id = tweetId;
 
+  console.log(status);
+  console.log(in_reply_to_status_id);
+
   return new Promise((resolve, reject) => {
-    twitter.post(
-      "statuses/update",
-      {
+    twitter
+      .post("statuses/update", {
         status,
         in_reply_to_status_id,
         auto_populate_reply_metadata: true
-      },
-      (err, data, response) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          resolve(response);
-        }
-      }
-    );
+      })
+      .then(response => {
+        console.log("reply");
+        resolve(response);
+        process.exit();
+      })
+      .catch(err => reject(err));
   });
 }
 
