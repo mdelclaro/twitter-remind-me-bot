@@ -13,7 +13,7 @@ module.exports = {
     "\n\nExamples: 30 minutes, 1 hour, 1 day.\n\n" +
     "In case you insert an invalid time interval, " +
     "the reminder will get sent back to you right away =)",
-  reply_text: "ok",
-  reminder_text: "reminder",
+  reply_text: "got it! I will remind you :-)",
+  reminder_text: "here's your reminder! :D",
   username: "@mdelclaro"
 };
