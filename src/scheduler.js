@@ -3,7 +3,13 @@ const Agenda = require("agenda");
 const { MongoClient } = require("mongodb");
 
 const config = require("../config");
-const { mongo_url } = require("../config");
+const {
+  mongo_url,
+  username,
+  help_text,
+  reply_text,
+  reminder_text
+} = require("../config");
 
 const twitter = new Twitter(config);
 let agenda;
@@ -22,21 +28,22 @@ module.exports.run = async () => {
 };
 
 function listenToTweets() {
-  const stream = twitter.stream("statuses/filter", { track: ["@mdelclaro"] });
+  const stream = twitter.stream("statuses/filter", { track: [username] });
   console.log("ouvindo tweets...");
   stream.on("tweet", async tweet => {
     console.log("recebeu tweet");
     const user = tweet.user.screen_name;
     const tweetId = tweet.id_str;
-    const replyText = "ok";
-    const reminderText = "test";
 
     try {
-      await reply(user, tweetId, replyText);
-      await schedule(user, tweetId, reminderText);
-      stream.stop();
-      console.log("parou");
-      // process.exit();
+      let tweetText = tweet.text.split(`@${user} `)[1];
+      if (tweetText === "help") {
+        await reply(user, tweetId, help_text);
+      } else {
+        await reply(user, tweetId, reply_text);
+        await schedule(user, tweetId, tweetText);
+      }
+      // stream.stop();
     } catch (err) {
       console.log("error: " + err);
     }
@@ -54,23 +61,25 @@ function reply(user, tweetId, text) {
         in_reply_to_status_id,
         auto_populate_reply_metadata: true
       })
+      .catch(err => reject(err))
       .then(response => {
         console.log("reply");
         resolve(response);
-      })
-      .catch(err => reject(err));
+      });
   });
 }
 
-function schedule(user, tweetId, text) {
+function schedule(user, tweetId, interval) {
   return new Promise(async (resolve, reject) => {
     try {
       await agenda.define("reminder", () => {
-        reply(user, tweetId, text);
+        reply(user, tweetId, reminder_text);
       });
 
+      console.log("interval: " + interval);
       await agenda.start();
-      await agenda.schedule("in 20 seconds", "reminder");
+      await agenda.schedule(`in ${interval}`, "reminder");
+      console.log("fez schedule");
       resolve();
     } catch (err) {
       reject(err);
