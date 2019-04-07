@@ -1,15 +1,17 @@
 const Twitter = require("twit");
 const Agenda = require("agenda");
 const { MongoClient } = require("mongodb");
+
 const config = require("../config");
 const { mongo_url } = require("../config");
+
 const twitter = new Twitter(config);
+let agenda;
 
 module.exports.run = async () => {
   try {
-    //const client = new MongoClient(mongo_url, { useNewUrlParser: true });
     const db = await MongoClient.connect(mongo_url, { useNewUrlParser: true });
-    const agenda = new Agenda().mongo(db.db(), "tweets");
+    agenda = new Agenda().mongo(db.db(), "tweets");
 
     //wait for agenda to connect to mongodb
     await new Promise(resolve => agenda.once("ready", resolve));
@@ -27,12 +29,14 @@ function listenToTweets() {
     const user = tweet.user.screen_name;
     const tweetId = tweet.id_str;
     const replyText = "ok";
-    const reminderText = "reminder";
-    // console.log(tweet);
+    const reminderText = "test";
 
     try {
-      reply(user, tweetId, replyText);
-      //schedule(user, tweetId, reminderText);
+      await reply(user, tweetId, replyText);
+      await schedule(user, tweetId, reminderText);
+      stream.stop();
+      console.log("parou");
+      // process.exit();
     } catch (err) {
       console.log("error: " + err);
     }
@@ -42,9 +46,6 @@ function listenToTweets() {
 function reply(user, tweetId, text) {
   const status = `@${user} ${text}`;
   const in_reply_to_status_id = tweetId;
-
-  console.log(status);
-  console.log(in_reply_to_status_id);
 
   return new Promise((resolve, reject) => {
     twitter
@@ -56,23 +57,20 @@ function reply(user, tweetId, text) {
       .then(response => {
         console.log("reply");
         resolve(response);
-        process.exit();
       })
       .catch(err => reject(err));
   });
 }
 
-function schedule(user, tweetId) {
+function schedule(user, tweetId, text) {
   return new Promise(async (resolve, reject) => {
     try {
       await agenda.define("reminder", () => {
-        reply(user, tweetId, "lembrete");
+        reply(user, tweetId, text);
       });
 
       await agenda.start();
-      await agenda.schedule("in 20 minutes", "send email report", {
-        to: "admin@example.com"
-      });
+      await agenda.schedule("in 20 seconds", "reminder");
       resolve();
     } catch (err) {
       reject(err);
