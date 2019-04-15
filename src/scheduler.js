@@ -28,14 +28,14 @@ module.exports.run = async () => {
 };
 
 function listenToTweets() {
-  const stream = twitter.stream("statuses/filter", { track: [username] });
-  console.log("ouvindo tweets...");
-  stream.on("tweet", async tweet => {
-    console.log("recebeu tweet");
-    const user = tweet.user.screen_name;
-    const tweetId = tweet.id_str;
+  try {
+    const stream = twitter.stream("statuses/filter", { track: [username] });
+    console.log("ouvindo tweets...");
+    stream.on("tweet", async tweet => {
+      console.log("recebeu tweet");
+      const user = tweet.user.screen_name;
+      const tweetId = tweet.id_str;
 
-    try {
       let tweetText = tweet.text.split(`${username} `)[1];
       console.log("tweet: " + tweet.text);
       if (tweetText === "help") {
@@ -46,10 +46,10 @@ function listenToTweets() {
         await schedule(user, tweetId, tweetText);
       }
       // stream.stop();
-    } catch (err) {
-      console.log("error: " + err);
-    }
-  });
+    });
+  } catch (err) {
+    console.log("error: " + err);
+  }
 }
 
 function reply(user, tweetId, text) {
