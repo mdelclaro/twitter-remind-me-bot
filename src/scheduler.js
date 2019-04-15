@@ -36,11 +36,13 @@ function listenToTweets() {
     const tweetId = tweet.id_str;
 
     try {
-      let tweetText = tweet.text.split(`@${user} `)[1];
+      let tweetText = tweet.text.split(`${username} `)[1];
+      console.log("tweet: " + tweet.text);
       if (tweetText === "help") {
         await reply(user, tweetId, help_text);
       } else {
-        await reply(user, tweetId, reply_text);
+        const index = Math.floor(Math.random() * 4);
+        await reply(user, tweetId, reply_text[index]);
         await schedule(user, tweetId, tweetText);
       }
       // stream.stop();
@@ -73,7 +75,8 @@ function schedule(user, tweetId, interval) {
   return new Promise(async (resolve, reject) => {
     try {
       await agenda.define("reminder", () => {
-        reply(user, tweetId, reminder_text);
+        const index = Math.floor(Math.random() * 4);
+        reply(user, tweetId, reminder_text[index]);
       });
 
       console.log("interval: " + interval);
