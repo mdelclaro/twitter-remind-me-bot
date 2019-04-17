@@ -95,3 +95,11 @@ function schedule(user, tweetId, interval) {
     }
   });
 }
+
+async function graceful() {
+  await agenda.stop();
+  process.exit(0);
+}
+
+process.on('SIGTERM', graceful);
+process.on('SIGINT' , graceful);
