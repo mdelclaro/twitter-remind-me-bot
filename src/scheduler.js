@@ -26,6 +26,7 @@ module.exports.run = async () => {
 
     //wait for agenda to connect to mongodb
     await new Promise(resolve => agenda.once("ready", resolve));
+    await agenda.start();
     listenToTweets();
   } catch (err) {
     console.log(err);
@@ -85,7 +86,7 @@ function schedule(user, tweetId, interval) {
       });
 
       console.log("interval: " + interval);
-      await agenda.start();
+     // await agenda.start();
       await agenda.schedule(`in ${interval}`, "reminder");
       console.log("fez schedule");
       resolve();
