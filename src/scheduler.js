@@ -24,7 +24,7 @@ module.exports.run = async () => {
     const db = await MongoClient.connect(mongo_url, { useNewUrlParser: true });
     agenda = new Agenda().mongo(db.db(), "tweets");
 
-    await agenda.define("reminder", () => {
+    await agenda.define("reminder", job => {
       const { user, tweetId, reminder_text } = job.attrs.data;
       reply(user, tweetId, reminder_text);
     });
