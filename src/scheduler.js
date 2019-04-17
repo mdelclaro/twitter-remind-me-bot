@@ -24,6 +24,11 @@ module.exports.run = async () => {
     const db = await MongoClient.connect(mongo_url, { useNewUrlParser: true });
     agenda = new Agenda().mongo(db.db(), "tweets");
 
+    await agenda.define("reminder", () => {
+      const { user, tweetId, reminder_text } = job.attrs.data;
+      reply(user, tweetId, reminder_text);
+    });
+
     //wait for agenda to connect to mongodb
     await new Promise(resolve => agenda.once("ready", resolve));
     await agenda.start();
@@ -80,14 +85,13 @@ function reply(user, tweetId, text) {
 function schedule(user, tweetId, interval) {
   return new Promise(async (resolve, reject) => {
     try {
-      await agenda.define("reminder", () => {
-        const index = Math.floor(Math.random() * 4);
-        reply(user, tweetId, reminder_text[index]);
-      });
-
       console.log("interval: " + interval);
-     // await agenda.start();
-      await agenda.schedule(`in ${interval}`, "reminder");
+      await agenda.schedule(`in ${interval}`, "reminder", {
+        index: Math.floor(Math.random() * 4),
+        user,
+        tweetId,
+        reminder_text: reminder_text[index]
+      });
       console.log("fez schedule");
       resolve();
     } catch (err) {
@@ -101,5 +105,5 @@ async function graceful() {
   process.exit(0);
 }
 
-process.on('SIGTERM', graceful);
-process.on('SIGINT' , graceful);
+process.on("SIGTERM", graceful);
+process.on("SIGINT", graceful);
