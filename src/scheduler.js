@@ -86,8 +86,8 @@ function schedule(user, tweetId, interval) {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("interval: " + interval);
+      const index = Math.floor(Math.random() * 4);
       await agenda.schedule(`in ${interval}`, "reminder", {
-        index: Math.floor(Math.random() * 4),
         user,
         tweetId,
         reminder_text: reminder_text[index]
