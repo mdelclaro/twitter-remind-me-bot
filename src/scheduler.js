@@ -101,6 +101,7 @@ function schedule(user, tweetId, interval) {
 }
 
 async function graceful() {
+  console.log("gracefully shutting down...");
   await agenda.stop();
   process.exit(0);
 }
