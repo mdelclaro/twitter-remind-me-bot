@@ -24,5 +24,5 @@ module.exports = {
     "hey, just reminding you :-)",
     "here, to remind you :D"
   ],
-  username: "@remind_me_in_"
+  username: "@_tools_bot"
 };
