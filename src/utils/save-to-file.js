@@ -37,9 +37,10 @@ module.exports = async (tweet, originalTweet) => {
       ? process.env.PRODUCTION
       : process.env.DEVELOPMENT;
 
-    const replyText = "Here's the link for your download: " + url + filename;
+    const replyText =
+      "Here's the link for your download: " + url + "v1/download/" + filename;
     console.log(replyText);
-    // reply(user, tweetId, replyText);
+    reply(user, tweetId, replyText);
   } catch (err) {
     console.log("Error download: " + err);
   }
