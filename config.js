@@ -7,10 +7,10 @@ module.exports = {
   access_token_secret: process.env.ACCESS_TOKEN_SECRET,
   mongo_url: process.env.MONGO_URL,
   help_text:
-    "hello! I support the following time units: " +
-    "seconds, minutes, hours, days, weeks and months." +
-    "\n\nExamples: 30 minutes, 1 hour, 1 day.\n\n" +
-    "In case you insert an invalid time interval, " +
+    "hello! To download a file type 'download'. " +
+    "To set a reminder type 'set' and the time interval." +
+    "\n\nTime interval examples: 30 minutes, 1 hour, 1 day.\n\n" +
+    "In case of an invalid time interval, " +
     "the reminder will get sent back to you right away =)",
   reply_text: [
     "got it! I will remind you :-)",
