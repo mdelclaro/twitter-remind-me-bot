@@ -2,8 +2,11 @@ const Twitter = require("twit");
 const Agenda = require("agenda");
 const { MongoClient } = require("mongodb");
 
-const config = require("../config");
 const {
+  consumer_key,
+  consumer_secret,
+  access_token,
+  access_token_secret,
   mongo_url,
   username,
   help_text,
@@ -12,10 +15,10 @@ const {
 } = require("../config");
 
 const twitter = new Twitter({
-  consumer_key: config.consumer_key,
-  consumer_secret: config.consumer_secret,
-  access_token: config.access_token,
-  access_token_secret: config.access_token_secret
+  consumer_key,
+  consumer_secret,
+  access_token,
+  access_token_secret
 });
 let agenda;
 

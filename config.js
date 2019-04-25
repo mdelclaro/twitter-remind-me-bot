@@ -1,5 +1,4 @@
-const dotenv = require("dotenv");
-dotenv.config();
+require("dotenv-safe").config();
 
 module.exports = {
   consumer_key: process.env.API_KEY,

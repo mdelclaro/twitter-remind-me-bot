@@ -13,6 +13,7 @@
   "dependencies": {
     "agenda": "^2.0.2",
     "dotenv": "^7.0.0",
+    "dotenv-safe": "^6.1.0",
     "mongodb": "^3.2.3",
     "twit": "^2.2.11"
   },
