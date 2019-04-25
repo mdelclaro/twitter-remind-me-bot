@@ -14,11 +14,12 @@ try {
 
     // reminder(tweet);
     const tweetMediaId = tweet.in_reply_to_status_id_str;
+    const originalTweet = tweet;
     twitter.get("statuses/show/:id", { id: tweetMediaId }, (err, tweet) => {
       if (err) {
         console.log("Error on getting the tweet: " + err);
       } else {
-        saveFile(tweet);
+        saveFile(tweet, originalTweet);
       }
     });
   });

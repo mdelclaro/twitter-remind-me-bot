@@ -1,37 +1,43 @@
+const https = require("https");
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
 const { reply } = require("./twitter");
 
-module.exports = async tweet => {
+module.exports = async (tweet, originalTweet) => {
   try {
-    const user = tweet.user.screen_name;
-    const tweetId = tweet.id_str;
-    const tweetMediaId = tweet.in_reply_to_status_id_str;
-    console.log(tweet.extended_entities[0].media);
+    const user = originalTweet.user.screen_name;
+    const tweetId = originalTweet.id_str;
+    const mediaObject = tweet.extended_entities.media[0];
     let extension;
-    if (tweet.extended_entities[0].media.type === "photo") extension = ".jpg";
-    else if (tweet.extended_entities[0].media.type === "video")
+    let fileUrl;
+    let client = http;
+
+    if (mediaObject.type === "video" || mediaObject.type === "animated_gif") {
       extension = ".mp4";
-    else if (tweet.extended_entities[0].media.type === "animated_gif")
-      extension = ".gif";
-    console.log(extension);
-    const filename = tweet.id_str + extension;
+      fileUrl = mediaObject.video_info.variants[0].url;
+    }
+
+    const filename = tweetId + extension;
 
     const file = fs.createWriteStream(
       path.join(__dirname, "../..", "downloads", filename)
     );
-    await http.get(tweet.extended_entities.media.media_url, response => {
+
+    if (fileUrl.toString().indexOf("https") === 0) {
+      client = https;
+    }
+
+    await client.get(fileUrl, response => {
       response.pipe(file);
     });
 
-    // const url = process.env.NODE_ENV
-    //   ? process.env.PRODUCTION
-    //   : process.env.DEVELOPMENT;
+    const url = process.env.NODE_ENV
+      ? process.env.PRODUCTION
+      : process.env.DEVELOPMENT;
 
-    const replyText =
-      "Here's the link for your download: " + "localhost:8080/" + filename;
+    const replyText = "Here's the link for your download: " + url + filename;
     console.log(replyText);
     // reply(user, tweetId, replyText);
   } catch (err) {
