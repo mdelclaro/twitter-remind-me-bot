@@ -2,6 +2,7 @@ const { username } = require("./config");
 const reminder = require("./src/controllers/reminder");
 const saveFile = require("./src/utils/save-to-file");
 const { reply } = require("./src/utils/twitter");
+const { help_text } = require("./config");
 
 const twitter = require("./src/lib/twitter");
 
