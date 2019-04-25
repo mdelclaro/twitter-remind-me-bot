@@ -7,7 +7,7 @@ const { help_text } = require("./config");
 const twitter = require("./src/lib/twitter");
 
 try {
-  const stream = twitter.stream("statuses/filter", { track: [username] });
+  const stream = twitter.stream("statuses/filter", { track: username });
 
   console.log("Listening to tweets...");
 
