@@ -1,12 +1,13 @@
 # Bot for Twitter
 
-### Twitter bot that at the moment has only the functionality to remind you to check a tweet later.
+## What is this?
+This is a Twitter bot that at the moment has only the functionality to remind you to check a tweet later.
 
 Currently working on new features for it. Will try to implement the possibility to download a tweet's media =)
 
 In case you have any suggestions, feel free to contact me, or even better, send a pull request!
 
-## Running:
+## How do I run it?
 
 ```
 $ npm install
