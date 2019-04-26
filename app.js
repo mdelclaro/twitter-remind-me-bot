@@ -16,7 +16,10 @@ try {
 
     const user = tweet.user.screen_name;
     const tweetId = tweet.id_str;
-    const tweetText = tweet.text.split(`${username} `)[1].trim();
+    const tweetText = tweet.text
+      .split(`${username} `)[1]
+      .trim()
+      .toLowerCase();
 
     const command = tweetText.split(" ")[0];
 
