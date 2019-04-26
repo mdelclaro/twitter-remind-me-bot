@@ -16,7 +16,7 @@ module.exports = {
     "To set a reminder type 'set' and the time interval." +
     "\n\nTime interval examples: 30 minutes, 1 hour, 1 day.\n\n" +
     "In case of an invalid time interval, " +
-    "the reminder will get sent back to you right away =)",
+    "I will tell you =)",
   reply_text: [
     "got it! I will remind you :-)",
     "ok! I will remind you :-)",
@@ -30,5 +30,20 @@ module.exports = {
     "here, to remind you :D"
   ],
   username: "@_tools_bot",
-  intervals: ["seconds", "minutes", "hours", "days", "weeks", "months", "years"]
+  intervals: [
+    "second",
+    "seconds",
+    "minute",
+    "minutes",
+    "hour",
+    "hours",
+    "day",
+    "days",
+    "week",
+    "weeks",
+    "month",
+    "months",
+    "year",
+    "years"
+  ]
 };

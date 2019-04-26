@@ -14,13 +14,15 @@ module.exports = (tweet, text) => {
     if (
       !Number.isInteger(parseInt(number)) ||
       !intervals.includes(interval.toLowerCase())
-    )
+    ) {
       reply(user, tweetId, "Sorry, that's an invalid interval =(");
+      return;
+    }
 
     const index = Math.floor(Math.random() * 4);
     reply(user, tweetId, reply_text[index]);
 
-    console.log("Reminder interval: " + number + interval);
+    console.log(`Reminder interval: ${number} ${interval}`);
 
     agenda.schedule(`in ${number} ${interval}`, "tweet-reminder", {
       user,

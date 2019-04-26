@@ -20,30 +20,38 @@ try {
 
     const command = tweetText.split(" ")[0];
 
-    if (tweetText === "help") {
-      // help command
-      reply(user, tweetId, help_text);
-    } else if (command === "download") {
-      // command for download file
-      const tweetMediaId = tweet.in_reply_to_status_id_str;
-      const originalTweet = tweet;
-      twitter.get("statuses/show/:id", { id: tweetMediaId }, (err, tweet) => {
-        if (err) {
-          console.log("Error on getting the tweet: " + err);
-        } else {
-          saveFile(tweet, originalTweet);
-        }
-      });
-    } else if (command === "set") {
-      // command for reminder
-      reminder(tweet, tweetText);
-    } else {
-      // invalid command
-      reply(
-        user,
-        tweetId,
-        "Sorry, I didn't understand you =(\n\nTry using the help command!"
-      );
+    switch (command) {
+      case "help": // help command
+        reply(user, tweetId, help_text);
+        break;
+      case "download": // command for download file
+        const tweetMediaId = tweet.in_reply_to_status_id_str;
+        const originalTweet = tweet;
+        twitter.get("statuses/show/:id", { id: tweetMediaId }, (err, tweet) => {
+          if (err) {
+            console.log("Error on getting the tweet: " + err);
+          } else {
+            saveFile(tweet, originalTweet);
+          }
+        });
+        break;
+      case "set": // command for reminder
+        reminder(tweet, tweetText);
+        break;
+      case "thanks":
+        reply(user, tweetId, ":D");
+        break;
+      case "thank":
+        reply(user, tweetId, ":D");
+        break;
+      default:
+        // invalid command
+        reply(
+          user,
+          tweetId,
+          "Sorry, I didn't understand you =(\n\nTry using the help command!"
+        );
+        break;
     }
   });
 } catch (err) {
