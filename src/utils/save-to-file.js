@@ -76,7 +76,10 @@ module.exports = async (tweet, originalTweet) => {
 
       const downloadUrl = await storage();
 
-      const replyText = "Here's the link for your download: " + downloadUrl;
+      const replyText =
+        "Here's the link for your download: " +
+        downloadUrl +
+        "\n\nThe link is valid for 1 hour from now =)";
       console.log(replyText);
       reply(user, tweetId, replyText);
     } else {
