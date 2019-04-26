@@ -9,6 +9,7 @@ const { upload } = require("./aws");
 
 module.exports = async (tweet, originalTweet) => {
   try {
+    console.log(JSON.stringify(originalTweet));
     const user = originalTweet.user.screen_name;
     const tweetId = originalTweet.id_str;
     const mediaObject = tweet.extended_entities.media[0];
