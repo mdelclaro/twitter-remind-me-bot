@@ -1,12 +1,10 @@
 const request = require("request");
-const https = require("https");
-const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
 const agenda = require("../lib/agenda");
 
-const { reply } = require("./twitter");
+const { reply, dm } = require("./twitter");
 const { upload } = require("./aws");
 
 module.exports = async (tweet, originalTweet) => {
@@ -81,7 +79,7 @@ module.exports = async (tweet, originalTweet) => {
         downloadUrl +
         "\n\nThe link is valid for 1 hour from now =)";
       console.log(replyText);
-      reply(user, tweetId, replyText);
+      dm(originalTweet.user.id_str, replyText);
     } else {
       console.log("File type not suported.");
       reply(user, tweetId, "this file type is not supported =(");
