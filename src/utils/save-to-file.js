@@ -18,7 +18,16 @@ module.exports = async (tweet, originalTweet) => {
 
     if (mediaObject.type === "video" || mediaObject.type === "animated_gif") {
       extension = ".mp4";
-      fileUrl = mediaObject.video_info.variants[0].url;
+      if (mediaObject.video_info.variants[0].hasOwnProperty("bitrate")) {
+        fileUrl = mediaObject.video_info.variants[0].url;
+      } else if (mediaObject.video_info.variants[1].hasOwnProperty("bitrate")) {
+        fileUrl = mediaObject.video_info.variants[1].url;
+      } else {
+        dm(
+          originalTweet.user.id_str,
+          "Sorry, I couldn't get this file's link =("
+        );
+      }
 
       const filename = tweetId + extension;
       const filepath = path.join(__dirname, "../..", "downloads", filename);
