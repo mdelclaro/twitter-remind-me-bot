@@ -1,9 +1,13 @@
+const request = require("request");
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
+const agenda = require("../lib/agenda");
+
 const { reply } = require("./twitter");
+const { upload } = require("./aws");
 
 module.exports = async (tweet, originalTweet) => {
   try {
@@ -12,36 +16,75 @@ module.exports = async (tweet, originalTweet) => {
     const mediaObject = tweet.extended_entities.media[0];
     let extension;
     let fileUrl;
-    let client = http;
 
     if (mediaObject.type === "video" || mediaObject.type === "animated_gif") {
       extension = ".mp4";
       fileUrl = mediaObject.video_info.variants[0].url;
+
+      const filename = tweetId + extension;
+      const filepath = path.join(__dirname, "../..", "downloads", filename);
+      const file = fs.createWriteStream(filepath);
+      const req = request.get(fileUrl);
+
+      const storageTypes = {
+        local: () => {
+          return new Promise((resolve, reject) => {
+            req.on("response", () => {
+              req.pipe(file);
+            });
+
+            req.on("error", err => {
+              console.log(err);
+              fs.unlink(filepath);
+              reject();
+            });
+
+            file.on("finish", () => file.close(resolve(filepath)));
+
+            file.on("error", err => {
+              console.log(err);
+              fs.unlink(filepath);
+              reject();
+            });
+          });
+        },
+        s3: () => {
+          return new Promise((resolve, reject) => {
+            req.on("response", async res => {
+              const exec = await upload(filename, res);
+              if (!exec) reject();
+              agenda.on("ready", () =>
+                agenda.schedule("in 10 seconds", "delete-file", {
+                  key: filename
+                })
+              );
+
+              resolve(exec);
+            });
+
+            req.on("error", err => {
+              console.log(err);
+              reject();
+            });
+          });
+        }
+      };
+
+      const storage = process.env.NODE_ENV
+        ? storageTypes.s3
+        : storageTypes.local;
+
+      const downloadUrl = await storage();
+
+      const replyText = "Here's the link for your download: " + downloadUrl;
+      console.log(replyText);
+      reply(user, tweetId, replyText);
+    } else {
+      console.log("File type not suported.");
+      reply(user, tweetId, "this file type is not supported =(");
     }
-
-    const filename = tweetId + extension;
-
-    const file = fs.createWriteStream(
-      path.join(__dirname, "../..", "downloads", filename)
-    );
-
-    if (fileUrl.toString().indexOf("https") === 0) {
-      client = https;
-    }
-
-    await client.get(fileUrl, response => {
-      response.pipe(file);
-    });
-
-    const url = process.env.NODE_ENV
-      ? process.env.PRODUCTION
-      : process.env.DEVELOPMENT;
-
-    const replyText =
-      "Here's the link for your download: " + url + "v1/download/" + filename;
-    console.log(replyText);
-    reply(user, tweetId, replyText);
   } catch (err) {
     console.log("Error download: " + err);
+    reply(user, tweetId, "an error occurred =(");
   }
 };
