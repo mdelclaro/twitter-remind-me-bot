@@ -20,7 +20,7 @@ module.exports = tweet => {
 
     console.log("Reminder interval: " + number + greatness);
 
-    agenda.schedule(`in ${number + greatness}`, "tweet-reminder", {
+    agenda.schedule(`in ${number} ${greatness}`, "tweet-reminder", {
       user,
       tweetId,
       reminder_text: reminder_text[index]
