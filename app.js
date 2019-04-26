@@ -16,35 +16,34 @@ try {
 
     const user = tweet.user.screen_name;
     const tweetId = tweet.id_str;
-    const tweetText = tweet.text.split(`${username} `)[1];
+    const tweetText = tweet.text.split(`${username} `)[1].trim();
+
+    const command = tweetText.split(" ")[0];
 
     if (tweetText === "help") {
+      // help command
       reply(user, tweetId, help_text);
-    } else {
-      const command = tweetText.split(" ")[0];
-
+    } else if (command === "download") {
       // command for download file
-      if (command === "download") {
-        const tweetMediaId = tweet.in_reply_to_status_id_str;
-        const originalTweet = tweet;
-        twitter.get("statuses/show/:id", { id: tweetMediaId }, (err, tweet) => {
-          if (err) {
-            console.log("Error on getting the tweet: " + err);
-          } else {
-            saveFile(tweet, originalTweet);
-          }
-        });
-        // command for reminder
-      } else if (command === "set") {
-        reminder(tweet);
-        // invalid command
-      } else {
-        reply(
-          user,
-          tweetId,
-          "Sorry, I didn't understand you =(\n\nTry using the help command!"
-        );
-      }
+      const tweetMediaId = tweet.in_reply_to_status_id_str;
+      const originalTweet = tweet;
+      twitter.get("statuses/show/:id", { id: tweetMediaId }, (err, tweet) => {
+        if (err) {
+          console.log("Error on getting the tweet: " + err);
+        } else {
+          saveFile(tweet, originalTweet);
+        }
+      });
+    } else if (command === "set") {
+      // command for reminder
+      reminder(tweet, tweetText);
+    } else {
+      // invalid command
+      reply(
+        user,
+        tweetId,
+        "Sorry, I didn't understand you =(\n\nTry using the help command!"
+      );
     }
   });
 } catch (err) {

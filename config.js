@@ -29,5 +29,6 @@ module.exports = {
     "hey, just reminding you :-)",
     "here, to remind you :D"
   ],
-  username: "@_tools_bot"
+  username: "@_tools_bot",
+  intervals: ["seconds", "minutes", "hours", "days", "weeks", "months", "years"]
 };
