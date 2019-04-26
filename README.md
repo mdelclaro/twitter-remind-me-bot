@@ -47,3 +47,10 @@ $ npm start
 ├── server.js                   # Express app to download local files
 └── ...                         # Other configuration and standard files
 ```
+
+## Libs used on this project
+* [agenda](https://github.com/agenda/agenda): Used for scheduling the jobs
+* [aws-sdk](https://github.com/aws/aws-sdk-js): Used to manage the files on AWS S3
+* [mongodb](): Used to persist the scheduled jobs
+* [twit](): Used to interact with Twitter's API
+* And a couple of others :-)
