@@ -3,11 +3,11 @@ const https = require("https");
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const AWS = require("aws-sdk");
+
+const agenda = require("../lib/agenda");
 
 const { reply } = require("./twitter");
-
-const s3 = new AWS.S3();
+const { upload } = require("./aws");
 
 module.exports = async (tweet, originalTweet) => {
   try {
@@ -50,20 +50,16 @@ module.exports = async (tweet, originalTweet) => {
         },
         s3: () => {
           return new Promise((resolve, reject) => {
-            req.on("response", res => {
-              const params = {
-                Bucket: "twitter-tools",
-                Key: filename,
-                Body: res,
-                ACL: "public-read"
-              };
-              s3.upload(params, (err, data) => {
-                if (err) {
-                  console.log(err);
-                  reject();
-                }
-                resolve(data.Location);
-              });
+            req.on("response", async res => {
+              const exec = await upload(filename, res);
+              if (!exec) reject();
+              agenda.on("ready", () =>
+                agenda.schedule("in 10 seconds", "delete-file", {
+                  key: filename
+                })
+              );
+
+              resolve(exec);
             });
 
             req.on("error", err => {
