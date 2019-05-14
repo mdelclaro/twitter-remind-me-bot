@@ -60,7 +60,7 @@ module.exports = async (tweet, originalTweet) => {
             req.on("response", async res => {
               const exec = await upload(filename, res);
               if (!exec) reject();
-              agenda.schedule("in 1 hour", "delete-file", {
+              agenda.schedule("in 10 seconds", "delete-file", {
                 key: filename
               });
               resolve(exec);
