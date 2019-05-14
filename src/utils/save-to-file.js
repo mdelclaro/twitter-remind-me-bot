@@ -60,7 +60,7 @@ module.exports = async (tweet, originalTweet) => {
             req.on("response", async res => {
               const exec = await upload(filename, res);
               if (!exec) reject();
-              agenda.schedule("in 10 seconds", "delete-file", {
+              agenda.schedule("in 1 hour", "delete-file", {
                 key: filename
               });
               resolve(exec);
@@ -85,7 +85,13 @@ module.exports = async (tweet, originalTweet) => {
         downloadUrl +
         "\n\nThe link is valid for 1 hour from now =)";
       console.log(replyText);
-      dm(originalTweet.user.id_str, replyText);
+      const data = {
+        userId: originalTweet.user.id_str,
+        replyText,
+        user,
+        tweetId
+      };
+      dm(data);
     } else {
       console.log("File type not suported.");
       reply(user, tweetId, "this file type is not supported =(");

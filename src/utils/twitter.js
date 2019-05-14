@@ -17,23 +17,26 @@ module.exports.reply = (user, tweetId, text) => {
     });
 };
 
-module.exports.dm = (recipient_id, text) => {
+module.exports.dm = data => {
+  const { userId, replyText, user, tweetId } = data;
   twitter
     .post("direct_messages/events/new", {
       event: {
         type: "message_create",
         message_create: {
           target: {
-            recipient_id
+            recipient_id: userId
           },
           message_data: {
-            text
+            replyText
           }
         }
       }
     })
     .catch(err => {
       console.log("Error on DM: " + err);
+      module.exports.reply(user, tweetId, replyText);
+      console.log("Send reply instead of DM");
     })
     .then(() => {
       console.log("Sent DM");
