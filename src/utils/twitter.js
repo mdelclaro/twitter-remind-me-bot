@@ -28,7 +28,7 @@ module.exports.dm = data => {
             recipient_id: userId
           },
           message_data: {
-            // text: replyText
+            text: replyText
           }
         }
       }
