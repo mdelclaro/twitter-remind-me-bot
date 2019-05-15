@@ -84,7 +84,7 @@ module.exports.download = async (tweet, originalTweet) => {
         "Here's the link for your download: " +
         downloadUrl +
         "\n\nThe link is valid for 1 hour from now =)";
-      console.log("URL: " + downloadUrl);
+      console.log("Download URL: " + downloadUrl);
       const data = {
         userId: originalTweet.user.id_str,
         replyText,
