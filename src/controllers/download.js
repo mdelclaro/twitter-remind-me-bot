@@ -22,10 +22,10 @@ module.exports.download = async (tweet, originalTweet) => {
       } else if (mediaObject.video_info.variants[1].hasOwnProperty("bitrate")) {
         fileUrl = mediaObject.video_info.variants[1].url;
       } else {
-        dm(
-          originalTweet.user.id_str,
-          "Sorry, I couldn't get this file's link =("
-        );
+        dm({
+          userId: originalTweet.user.id_str,
+          replyText: "Sorry, I couldn't get this file's link =("
+        });
       }
 
       const filename = tweetId + extension;
@@ -84,8 +84,14 @@ module.exports.download = async (tweet, originalTweet) => {
         "Here's the link for your download: " +
         downloadUrl +
         "\n\nThe link is valid for 1 hour from now =)";
-      console.log(replyText);
-      dm(originalTweet.user.id_str, replyText);
+      console.log("URL: " + downloadUrl);
+      const data = {
+        userId: originalTweet.user.id_str,
+        replyText,
+        user,
+        tweetId
+      };
+      dm(data);
     } else {
       console.log("File type not suported.");
       reply(user, tweetId, "this file type is not supported =(");

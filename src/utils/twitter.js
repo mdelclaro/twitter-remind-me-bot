@@ -28,17 +28,17 @@ module.exports.dm = data => {
             recipient_id: userId
           },
           message_data: {
-            replyText
+            // text: replyText
           }
         }
       }
     })
+    .then(() => {
+      console.log("Sent DM");
+    })
     .catch(err => {
       console.log("Error on DM: " + err);
       module.exports.reply(user, tweetId, replyText);
-      console.log("Send reply instead of DM");
-    })
-    .then(() => {
-      console.log("Sent DM");
+      console.log("Sent reply instead of DM");
     });
 };
